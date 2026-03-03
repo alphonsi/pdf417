@@ -46,18 +46,7 @@ def scan_pdf417_barcode(image_path: str, parse_aamva: bool = False) -> Union[str
             # Get the first PDF417 barcode result
             result = results[0]
             print(f"SUCCESS: Decoded data: {repr(result.text)}")
-            
-            if parse_aamva:
-                # Parse AAMVA data
-                aamva_data = parse_aamva_data(result.text)
-                if aamva_data:
-                    print("AAMVA data parsed successfully")
-                    return aamva_data
-                else:
-                    print("No AAMVA data found in barcode")
-                    return result.text
-            else:
-                return result.text
+            return result.text
         else:
             print("No PDF417 barcodes found in the image")
             return ""
@@ -223,138 +212,6 @@ def scan_with_detailed_info(image_path: str) -> List[Dict[str, Union[str, object
         print(f"ERROR: Failed to scan barcodes: {e}")
         return []
 
-def parse_aamva_data(raw_data: str) -> Optional[Dict[str, Any]]:
-    """
-    Parse AAMVA-compliant PDF417 data and extract structured information.
-    
-    Args:
-        raw_data (str): Raw decoded PDF417 barcode data
-        
-    Returns:
-        Optional[Dict[str, Any]]: Parsed AAMVA data or None if not AAMVA format
-    """
-    if not raw_data or not raw_data.startswith('@'):
-        return None
-    
-    try:
-        # Check for ANSI header
-        if 'ANSI' not in raw_data:
-            return None
-            
-        # Split into lines and remove control characters
-        lines = raw_data.replace('\x1e', '\n').replace('\r', '\n').split('\n')
-        
-        # Initialize result dictionary
-        aamva_data = {
-            'header': {},
-            'personal_info': {},
-            'address': {},
-            'license_info': {},
-            'version': None,
-            'raw_data': raw_data
-        }
-        
-        # Parse header information
-        for line in lines:
-            line = line.strip()
-            if line.startswith('@'):
-                aamva_data['header']['start'] = True
-            elif line.startswith('ANSI'):
-                parts = line.split()
-                if len(parts) >= 3:
-                    aamva_data['header']['standard'] = parts[0]
-                    aamva_data['header']['issuer'] = parts[1][:6]  # First 6 digits
-                    aamva_data['header']['version'] = parts[1][6:8]  # Version
-                    aamva_data['header']['jurisdiction_version'] = parts[1][8:10]
-                    aamva_data['version'] = parts[1][6:8]
-        
-        # Parse data fields
-        for line in lines:
-            line = line.strip()
-            if not line or len(line) < 3:
-                continue
-                
-            # Field codes and their descriptions
-            field_parsers = {
-                'DAQ': ('license_number', 'License Number'),
-                'DCS': ('last_name', 'Last Name'),
-                'DAC': ('first_name', 'First Name'),
-                'DAD': ('middle_name', 'Middle Name'),
-                'DBD': ('issue_date', 'Issue Date'),
-                'DBB': ('dob', 'Date of Birth'),
-                'DBA': ('expiry_date', 'Expiry Date'),
-                'DBC': ('sex', 'Sex'),
-                'DAY': ('eye_color', 'Eye Color'),
-                'DAZ': ('hair_color', 'Hair Color'),
-                'DAU': ('height', 'Height'),
-                'DAW': ('weight', 'Weight'),
-                'DAG': ('address_street', 'Street Address'),
-                'DAI': ('address_city', 'City'),
-                'DAJ': ('address_state', 'State'),
-                'DAK': ('address_zip', 'ZIP Code'),
-                'DCG': ('country', 'Country'),
-                'DCF': ('discriminator', 'Discriminator'),
-                'DCA': ('class', 'License Class'),
-                'DCB': ('restrictions', 'Restrictions'),
-                'DCD': ('endorsements', 'Endorsements'),
-                'DCU': ('suffix', 'Suffix'),
-                'DDE': ('document_discriminator', 'Document Discriminator'),
-                'DDF': ('jurisdiction_version', 'Jurisdiction Version'),
-                'DDG': ('audit_information', 'Audit Information'),
-                'DCK': ('inventory_control', 'Inventory Control'),
-                'DDB': ('revision_date', 'Revision Date'),
-                'DDD': ('limited_duration', 'Limited Duration')
-            }
-            
-            for code, (key, description) in field_parsers.items():
-                if line.startswith(code):
-                    value = line[len(code):].strip()
-                    if value:
-                        if key in ['issue_date', 'dob', 'expiry_date', 'revision_date']:
-                            # Format dates as MM/DD/YYYY
-                            if len(value) == 8:
-                                value = f"{value[:2]}/{value[2:4]}/{value[4:]}"
-                        elif key in ['height']:
-                            # Format height (e.g., "070 IN" -> "5'10\"")
-                            if ' IN' in value:
-                                inches = int(value.replace(' IN', ''))
-                                feet = inches // 12
-                                remaining_inches = inches % 12
-                                value = f"{feet}'{remaining_inches}\""
-                        elif key in ['weight']:
-                            # Format weight (e.g., "180LB" -> "180 lbs")
-                            if 'LB' in value:
-                                value = value.replace('LB', ' lbs')
-                        
-                        # Determine which section to store in
-                        if key in ['license_number', 'class', 'restrictions', 'endorsements', 'discriminator']:
-                            aamva_data['license_info'][key] = value
-                        elif key in ['address_street', 'address_city', 'address_state', 'address_zip', 'country']:
-                            aamva_data['address'][key] = value
-                        elif key in ['issue_date', 'dob', 'expiry_date', 'sex', 'eye_color', 'hair_color', 'height', 'weight', 'suffix']:
-                            aamva_data['personal_info'][key] = value
-                        else:
-                            aamva_data['personal_info'][key] = value
-        
-        # Clean up empty sections
-        if not aamva_data['personal_info']:
-            del aamva_data['personal_info']
-        if not aamva_data['address']:
-            del aamva_data['address']
-        if not aamva_data['license_info']:
-            del aamva_data['license_info']
-        
-        # Only return if we found meaningful data
-        if len(aamva_data) > 2:  # More than just header and raw_data
-            return aamva_data
-        else:
-            return None
-            
-    except Exception as e:
-        print(f"Error parsing AAMVA data: {e}")
-        return None
-
-
 def main():
     """Main function for command-line usage"""
     print("PDF417 Barcode Scanner")
@@ -362,9 +219,6 @@ def main():
     
     if len(sys.argv) > 1:
         image_path = sys.argv[1]
-        
-        # Check for AAMVA parsing flag
-        parse_aamva = '--aamva' in sys.argv
         
         if not os.path.exists(image_path):
             print(f"ERROR: File not found: {image_path}")
@@ -383,28 +237,10 @@ def main():
                 print(f"\nDecoded data saved to: {output_file}")
         else:
             # Scan for single barcode
-            result = scan_pdf417_barcode(image_path, parse_aamva=parse_aamva)
+            result = scan_pdf417_barcode(image_path)
             
             if result:
-                if parse_aamva and isinstance(result, dict):
-                    print("\nAAMVA Data Parsed Successfully:")
-                    print("=" * 40)
-                    if 'version' in result:
-                        print(f"AAMVA Version: {result['version']}")
-                    if 'personal_info' in result:
-                        print("\nPersonal Information:")
-                        for key, value in result['personal_info'].items():
-                            print(f"  {key.replace('_', ' ').title()}: {value}")
-                    if 'address' in result:
-                        print("\nAddress:")
-                        for key, value in result['address'].items():
-                            print(f"  {key.replace('_', ' ').title()}: {value}")
-                    if 'license_info' in result:
-                        print("\nLicense Information:")
-                        for key, value in result['license_info'].items():
-                            print(f"  {key.replace('_', ' ').title()}: {value}")
-                else:
-                    print(f"\nDecoded data: {result}")
+                print(f"\nDecoded data: {result}")
             else:
                 print("\nNo barcodes detected. Try:")
                 print("1. Ensuring good lighting conditions")
@@ -426,13 +262,11 @@ def main():
         print("Usage: python pdf417_scanner.py <image_path> [options]")
         print("\nOptions:")
         print("  --save [output_file]  Save decoded data to file")
-        print("  --aamva              Parse AAMVA data and display structured information")
         print("\nExamples:")
         print("  python pdf417_scanner.py generated_barcode.png")
         print("  python pdf417_scanner.py test_complete_pdf417.png")
         print("  python pdf417_scanner.py barcode.png --save")
         print("  python pdf417_scanner.py barcode.png --save results.txt")
-        print("  python pdf417_scanner.py license_barcode.png --aamva")
 
 if __name__ == "__main__":
     main()
