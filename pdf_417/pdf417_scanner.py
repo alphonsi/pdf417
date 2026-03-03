@@ -100,6 +100,60 @@ def scan_multiple_barcodes(image_path):
         print(f"ERROR: Failed to scan barcodes: {e}")
         return []
 
+def scan_with_detailed_info(image_path):
+    """
+    Scan and decode PDF417 barcodes with detailed information.
+    
+    Args:
+        image_path (str): Path to the image file containing the barcode(s)
+    
+    Returns:
+        list: List of dictionaries containing detailed barcode information
+    """
+    try:
+        from pdf417decoder import PDF417Decoder
+        from PIL import Image
+        
+        print(f"Scanning image for detailed barcode information: {image_path}")
+        
+        # Load image
+        img = Image.open(image_path)
+        print(f"Image loaded: {img.size}, mode: {img.mode}")
+        
+        # Convert to RGB for decoding
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        # Decode all barcodes
+        decoder = PDF417Decoder(img)
+        results = decoder.decode_all()
+        
+        # Get detailed barcode information
+        detailed_info = []
+        if hasattr(decoder, '_barcodes_info'):
+            detailed_info = decoder._barcodes_info
+        
+        if results:
+            print(f"SUCCESS: Found {len(results)} barcode(s):")
+            for i, result in enumerate(results):
+                print(f"  Barcode {i+1}: {repr(result)}")
+                if i < len(detailed_info):
+                    info = detailed_info[i]
+                    print(f"    Position: {info['rect']}")
+                    print(f"    Polygon: {info['polygon']}")
+        else:
+            print("No PDF417 barcodes found in the image")
+        
+        return detailed_info
+        
+    except ImportError as e:
+        print(f"ERROR: Missing required library: {e}")
+        print("Install with: pip install pyzbar pillow")
+        return []
+    except Exception as e:
+        print(f"ERROR: Failed to scan barcodes: {e}")
+        return []
+
 def main():
     """Main function for command-line usage"""
     print("PDF417 Barcode Scanner")
@@ -128,6 +182,11 @@ def main():
         print("\n" + "-" * 30)
         print("Scanning for multiple barcodes...")
         all_results = scan_multiple_barcodes(image_path)
+        
+        # Show detailed information
+        print("\n" + "-" * 30)
+        print("Detailed barcode information...")
+        detailed_info = scan_with_detailed_info(image_path)
         
     else:
         print("Usage: python pdf417_scanner.py <image_path>")
