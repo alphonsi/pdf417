@@ -90,11 +90,25 @@ This will scan the specified image file and decode any PDF417 barcodes found.
 
 **Save Decoded Data to File:**
 ```bash
-python pdf_417/pdf417_scanner.py barcode_image.png --save
-python pdf_417/pdf417_scanner.py barcode_image.png --save results.txt
+# Default output file
+python pdf_417/pdf417_scanner.py license_back.png
+
+# Custom output file name
+python pdf_417/pdf417_scanner.py aamva_generated.png my_results.txt
 ```
 
 This saves decoded data to `decoded_data.txt` or a specified output file.
+
+**AAMVA Data Parsing:**
+```bash
+python pdf_417/pdf417_scanner.py license_barcode.png --aamva
+```
+
+This parses AAMVA-compliant driver's license and ID card barcodes, displaying structured information including:
+- Personal information (names, DOB, sex, eye/hair color, height, weight)
+- Address information (street, city, state, ZIP, country)
+- License information (number, class, restrictions, endorsements)
+- Header information (version, issuer, jurisdiction)
 
 **Programmatic Scanning:**
 ```python
@@ -103,6 +117,12 @@ from pdf_417.pdf417_scanner import scan_pdf417_barcode, decode_to_file
 # Scan an image
 result = scan_pdf417_barcode("my_barcode.png")
 print(f"Decoded data: {result}")
+
+# Scan with AAMVA parsing
+aamva_result = scan_pdf417_barcode("license_barcode.png", parse_aamva=True)
+if isinstance(aamva_result, dict):
+    print(f"AAMVA Version: {aamva_result['version']}")
+    print(f"License Number: {aamva_result['license_info']['license_number']}")
 
 # Save decoded data to file
 success = decode_to_file("barcode_image.png", "results.txt")
