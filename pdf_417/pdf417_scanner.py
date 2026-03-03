@@ -3,7 +3,7 @@
 PDF417 Barcode Scanner
 
 This script provides functionality to scan and decode PDF417 barcodes from images.
-It uses the pyzbar library for barcode detection and decoding.
+It uses the pdf417decoder library for barcode detection and decoding.
 """
 
 import sys
@@ -38,18 +38,20 @@ def scan_pdf417_barcode(image_path):
         
         # Decode
         decoder = PDF417Decoder(img)
-        result = decoder.decode()
+        decode_result = decoder.decode()
         
-        if result:
+        if decode_result > 0:
+            # Get the decoded data from the first barcode
+            result = decoder.barcode_data
             print(f"SUCCESS: Decoded data: {repr(result)}")
+            return result
         else:
             print("No PDF417 barcodes found in the image")
-        
-        return result
+            return ""
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pyzbar pillow")
+        print("Install with: pip install pdf417decoder pillow")
         return ""
     except Exception as e:
         print(f"ERROR: Failed to scan barcode: {e}")
@@ -81,12 +83,15 @@ def scan_multiple_barcodes(image_path):
         
         # Decode all barcodes
         decoder = PDF417Decoder(img)
-        results = decoder.decode_all()
+        decode_result = decoder.decode()
         
-        if results:
+        results = []
+        if decode_result > 0:
+            # Get data from the first barcode
+            result = decoder.barcode_data
+            results.append(result)
             print(f"SUCCESS: Found {len(results)} barcode(s):")
-            for i, result in enumerate(results):
-                print(f"  Barcode {i+1}: {repr(result)}")
+            print(f"  Barcode 1: {repr(result)}")
         else:
             print("No PDF417 barcodes found in the image")
         
@@ -94,7 +99,7 @@ def scan_multiple_barcodes(image_path):
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pyzbar pillow")
+        print("Install with: pip install pdf417decoder pillow")
         return []
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
@@ -127,7 +132,13 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
         
         # Decode all barcodes
         decoder = PDF417Decoder(img)
-        results = decoder.decode_all()
+        decode_result = decoder.decode()
+        
+        results = []
+        if decode_result > 0:
+            # Get data from the first barcode
+            result = decoder.barcode_data
+            results.append(result)
         
         # Save results to file
         if results:
@@ -146,7 +157,7 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pyzbar pillow")
+        print("Install with: pip install pdf417decoder pillow")
         return False
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
@@ -178,21 +189,21 @@ def scan_with_detailed_info(image_path):
         
         # Decode all barcodes
         decoder = PDF417Decoder(img)
-        results = decoder.decode_all()
+        decode_result = decoder.decode()
         
         # Get detailed barcode information
         detailed_info = []
         if hasattr(decoder, '_barcodes_info'):
             detailed_info = decoder._barcodes_info
         
-        if results:
-            print(f"SUCCESS: Found {len(results)} barcode(s):")
-            for i, result in enumerate(results):
-                print(f"  Barcode {i+1}: {repr(result)}")
-                if i < len(detailed_info):
-                    info = detailed_info[i]
-                    print(f"    Position: {info['rect']}")
-                    print(f"    Polygon: {info['polygon']}")
+        if decode_result > 0:
+            result = decoder.barcode_data
+            print(f"SUCCESS: Found {1} barcode(s):")
+            print(f"  Barcode 1: {repr(result)}")
+            if detailed_info:
+                info = detailed_info[0]
+                print(f"    Position: {info['rect']}")
+                print(f"    Polygon: {info['polygon']}")
         else:
             print("No PDF417 barcodes found in the image")
         
@@ -200,7 +211,7 @@ def scan_with_detailed_info(image_path):
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pyzbar pillow")
+        print("Install with: pip install pdf417decoder pillow")
         return []
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
