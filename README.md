@@ -22,14 +22,20 @@ Note: You may also need to install ZBar for pyzbar to work properly on some syst
 
 ## Project Structure
 
-### Core Files
+### Core Module (`pdf_417/`)
 
 - `pdf417decoder.py` - PDF417 barcode decoder implementation (library)
 - `pdf417_encoder.py` - PDF417 barcode generation script
 - `pdf417_scanner.py` - PDF417 barcode scanning script
-- `pdf417_test_suite.py` - Comprehensive test suite
 
-### Test Files
+### Test Suite (`tests/`)
+
+- `pdf417_test_suite.py` - Comprehensive test suite
+- `test_pdf417.py` - Basic encoding test (legacy)
+- `test_barcode_scanning.py` - Basic scanning test (legacy)
+- `test_complete_pdf417.py` - Complete test (legacy)
+
+### Test Images
 
 - `test_complete_pdf417.png` - Sample barcode for testing
 - `test_for_scanning.png` - Simple barcode for external scanning
@@ -40,14 +46,14 @@ Note: You may also need to install ZBar for pyzbar to work properly on some syst
 ### 1. Encoding (Generate PDF417 Barcodes)
 
 ```bash
-python pdf417_encoder.py
+python pdf_417/pdf417_encoder.py
 ```
 
 This will generate a PDF417 barcode from sample data and save it as `generated_barcode.png`.
 
 **Custom Encoding:**
 ```python
-from pdf417_encoder import generate_pdf417_barcode
+from pdf_417.pdf417_encoder import generate_pdf417_barcode
 
 # Generate custom barcode
 output_file = generate_pdf417_barcode(
@@ -61,14 +67,14 @@ output_file = generate_pdf417_barcode(
 ### 2. Scanning (Decode PDF417 Barcodes)
 
 ```bash
-python pdf417_scanner.py generated_barcode.png
+python pdf_417/pdf417_scanner.py generated_barcode.png
 ```
 
 This will scan the specified image file and decode any PDF417 barcodes found.
 
 **Programmatic Scanning:**
 ```python
-from pdf417_scanner import scan_pdf417_barcode
+from pdf_417.pdf417_scanner import scan_pdf417_barcode
 
 # Scan an image
 result = scan_pdf417_barcode("my_barcode.png")
@@ -78,7 +84,7 @@ print(f"Decoded data: {result}")
 ### 3. Testing (Complete Workflow)
 
 ```bash
-python pdf417_test_suite.py
+python tests/pdf417_test_suite.py
 ```
 
 This runs comprehensive tests including:
@@ -105,7 +111,7 @@ This runs comprehensive tests including:
 ### Custom Encoding Parameters
 
 ```python
-from pdf417_encoder import generate_pdf417_barcode
+from pdf_417.pdf417_encoder import generate_pdf417_barcode
 
 # High-density encoding (more data, smaller modules)
 generate_pdf417_barcode(
@@ -125,7 +131,7 @@ generate_pdf417_barcode(
 ### Multiple Barcode Scanning
 
 ```python
-from pdf417_scanner import scan_multiple_barcodes
+from pdf_417.pdf417_scanner import scan_multiple_barcodes
 
 # Scan for multiple barcodes in one image
 results = scan_multiple_barcodes("image_with_multiple_barcodes.png")
@@ -137,7 +143,7 @@ for i, result in enumerate(results):
 
 ```python
 # Import the decoder class directly
-from pdf417decoder import PDF417Decoder
+from pdf_417.pdf417decoder import PDF417Decoder
 from PIL import Image
 
 def process_image(image_path):

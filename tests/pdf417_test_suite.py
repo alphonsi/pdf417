@@ -9,8 +9,8 @@ It tests the complete workflow from data encoding to barcode scanning.
 import sys
 import os
 
-# Add the current directory to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add the parent directory to Python path to access pdf_417 module
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 def test_encoding():
     """Test PDF417 encoding with treepoem"""
