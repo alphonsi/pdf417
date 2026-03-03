@@ -20,63 +20,133 @@ pip install treepoem pyzbar pillow
 
 Note: You may also need to install ZBar for pyzbar to work properly on some systems.
 
-## Files
+## Project Structure
 
-- `pdf417decoder.py` - PDF417 barcode decoder implementation
-- `test_pdf417.py` - Basic PDF417 generation test
-- `test_decode.py` - Basic PDF417 decoding test
-- `test_complete_pdf417.py` - Comprehensive encoding/decoding test suite
-- `README.md` - This documentation file
+### Core Files
+
+- `pdf417decoder.py` - PDF417 barcode decoder implementation (library)
+- `pdf417_encoder.py` - PDF417 barcode generation script
+- `pdf417_scanner.py` - PDF417 barcode scanning script
+- `pdf417_test_suite.py` - Comprehensive test suite
+
+### Test Files
+
+- `test_complete_pdf417.png` - Sample barcode for testing
+- `test_for_scanning.png` - Simple barcode for external scanning
+- `test_generated_pdf417.png` - Generated test barcode
 
 ## Usage
 
-### Basic Encoding
+### 1. Encoding (Generate PDF417 Barcodes)
 
-```python
-import treepoem
-from PIL import Image
-
-# Generate a PDF417 barcode
-data = "Hello World!"
-barcode_image = treepoem.generate_barcode(
-    barcode_type='pdf417',
-    data=data,
-    options={
-        "columns": 12,
-        "security_level": 4,
-        "rows": 0
-    }
-)
-
-# Convert to black/white and save
-barcode_image = barcode_image.convert('1')
-barcode_image.save("barcode.png")
+```bash
+python pdf417_encoder.py
 ```
 
-### Basic Decoding
+This will generate a PDF417 barcode from sample data and save it as `generated_barcode.png`.
 
+**Custom Encoding:**
 ```python
-from pdf417decoder import PDF417Decoder
-from PIL import Image
+from pdf417_encoder import generate_pdf417_barcode
 
-# Load and decode an image
-img = Image.open('barcode.png')
-decoder = PDF417Decoder(img)
-result = decoder.decode()
+# Generate custom barcode
+output_file = generate_pdf417_barcode(
+    data="Your custom data here",
+    output_file="my_barcode.png",
+    columns=12,
+    security_level=4
+)
+```
+
+### 2. Scanning (Decode PDF417 Barcodes)
+
+```bash
+python pdf417_scanner.py generated_barcode.png
+```
+
+This will scan the specified image file and decode any PDF417 barcodes found.
+
+**Programmatic Scanning:**
+```python
+from pdf417_scanner import scan_pdf417_barcode
+
+# Scan an image
+result = scan_pdf417_barcode("my_barcode.png")
 print(f"Decoded data: {result}")
 ```
 
-### Advanced Decoding
+### 3. Testing (Complete Workflow)
+
+```bash
+python pdf417_test_suite.py
+```
+
+This runs comprehensive tests including:
+- PDF417 barcode generation
+- Image properties verification
+- Decoding attempts with multiple approaches
+- Round-trip encoding/decoding verification
+
+## File Purposes
+
+### Core Implementation
+- **`pdf417decoder.py`** - Core decoding library (import this in other scripts)
+- **`pdf417_encoder.py`** - Standalone encoding script
+- **`pdf417_scanner.py`** - Standalone scanning script
+- **`pdf417_test_suite.py`** - Complete test suite
+
+### Legacy Test Files (Keep for Reference)
+- **`test_pdf417.py`** - Basic encoding test (legacy)
+- **`test_barcode_scanning.py`** - Basic scanning test (legacy)
+- **`test_complete_pdf417.py`** - Complete test (legacy)
+
+## Advanced Usage
+
+### Custom Encoding Parameters
 
 ```python
-# Decode all barcodes in an image
-all_results = decoder.decode_all()
+from pdf417_encoder import generate_pdf417_barcode
 
-# Get detailed barcode information
-if hasattr(decoder, '_barcodes_info'):
-    for i, info in enumerate(decoder._barcodes_info):
-        print(f"Barcode {i+1}: {info['data']}")
-        print(f"Position: {info['rect']}")
+# High-density encoding (more data, smaller modules)
+generate_pdf417_barcode(
+    data="Large amount of data...",
+    columns=16,           # More columns = more data per row
+    security_level=6      # Higher error correction
+)
+
+# Low-density encoding (easier to scan)
+generate_pdf417_barcode(
+    data="Simple data",
+    columns=6,            # Fewer columns = larger modules
+    security_level=2      # Lower error correction
+)
+```
+
+### Multiple Barcode Scanning
+
+```python
+from pdf417_scanner import scan_multiple_barcodes
+
+# Scan for multiple barcodes in one image
+results = scan_multiple_barcodes("image_with_multiple_barcodes.png")
+for i, result in enumerate(results):
+    print(f"Barcode {i+1}: {result}")
+```
+
+### Integration with Other Applications
+
+```python
+# Import the decoder class directly
+from pdf417decoder import PDF417Decoder
+from PIL import Image
+
+def process_image(image_path):
+    img = Image.open(image_path)
+    decoder = PDF417Decoder(img)
+    return decoder.decode_all()
+
+# Use in web applications, desktop apps, etc.
+results = process_image("uploaded_image.png")
 ```
 
 ## Test Results
@@ -121,19 +191,13 @@ Use command-line tools like `zbarimg` for decoding:
 zbarimg barcode.png
 ```
 
-## Testing
+## Mobile Testing
 
-Run the comprehensive test suite:
+Generated barcodes can be tested with mobile apps:
 
-```bash
-python test_complete_pdf417.py
-```
-
-This will test:
-1. PDF417 barcode generation
-2. Image properties verification
-3. Decoding attempts with multiple approaches
-4. Round-trip encoding/decoding verification
+1. **Download "Barcode Scanner"** (ZXing) from your app store
+2. **Open the app** and point your camera at the barcode image
+3. **The app should read** the encoded data
 
 ## License
 
