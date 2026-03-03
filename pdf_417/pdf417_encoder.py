@@ -62,28 +62,77 @@ def generate_pdf417_barcode(data, output_file="generated_barcode.png", columns=1
         print(f"ERROR: Failed to generate barcode: {e}")
         return None
 
+def encode_from_file(input_file, output_file="encoded_barcode.png", columns=12, security_level=4):
+    """
+    Generate a PDF417 barcode from text data in a file.
+    
+    Args:
+        input_file (str): Path to the input text file containing data to encode
+        output_file (str): Output filename for the generated barcode
+        columns (int): Number of columns (data density)
+        security_level (int): Error correction level (2-8, 4-5 is good balance)
+    
+    Returns:
+        str: Path to the generated barcode file, or None if failed
+    """
+    try:
+        # Read data from file
+        with open(input_file, 'r', encoding='utf-8') as f:
+            data = f.read()
+        
+        print(f"Reading data from file: {input_file}")
+        print(f"Data length: {len(data)} characters")
+        
+        # Generate barcode
+        return generate_pdf417_barcode(data, output_file, columns, security_level)
+        
+    except FileNotFoundError:
+        print(f"ERROR: Input file not found: {input_file}")
+        return None
+    except Exception as e:
+        print(f"ERROR: Failed to read file or generate barcode: {e}")
+        return None
+
 def main():
     """Main function for command-line usage"""
     print("PDF417 Barcode Encoder")
     print("=" * 30)
     
-    # Example data
-    test_data = "@\n\x1E\rANSI 636014TEST01DLTEST stessy Opiyo Test Nairobi KE 2026"
-    
-    # Generate barcode
-    output_file = generate_pdf417_barcode(
-        data=test_data,
-        output_file="generated_barcode.png",
-        columns=12,
-        security_level=4
-    )
-    
-    if output_file:
-        print(f"\nGenerated barcode: {output_file}")
-        print("You can now scan this barcode with a phone app or barcode scanner.")
-        print("\nTo encode custom data, modify the 'test_data' variable in this script.")
+    if len(sys.argv) > 1:
+        input_file = sys.argv[1]
+        
+        # Generate barcode from file
+        output_file = encode_from_file(
+            input_file=input_file,
+            output_file="encoded_barcode.png",
+            columns=12,
+            security_level=4
+        )
+        
+        if output_file:
+            print(f"\nGenerated barcode: {output_file}")
+            print("You can now scan this barcode with a phone app or barcode scanner.")
+        else:
+            print("Failed to generate barcode from file.")
     else:
-        print("Failed to generate barcode.")
+        # Example data
+        test_data = "@\n\x1E\rANSI 636014TEST01DLTEST stessy Opiyo Test Nairobi KE 2026"
+        
+        # Generate barcode
+        output_file = generate_pdf417_barcode(
+            data=test_data,
+            output_file="generated_barcode.png",
+            columns=12,
+            security_level=4
+        )
+        
+        if output_file:
+            print(f"\nGenerated barcode: {output_file}")
+            print("You can now scan this barcode with a phone app or barcode scanner.")
+            print("\nTo encode custom data from file, use:")
+            print(f"  python pdf417_encoder.py <input_file.txt>")
+        else:
+            print("Failed to generate barcode.")
 
 if __name__ == "__main__":
     main()

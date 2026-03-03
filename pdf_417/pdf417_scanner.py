@@ -100,6 +100,58 @@ def scan_multiple_barcodes(image_path):
         print(f"ERROR: Failed to scan barcodes: {e}")
         return []
 
+def decode_to_file(image_path, output_file="decoded_data.txt"):
+    """
+    Scan and decode PDF417 barcodes and save results to a file.
+    
+    Args:
+        image_path (str): Path to the image file containing the barcode(s)
+        output_file (str): Output filename for the decoded data
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        from pdf417decoder import PDF417Decoder
+        from PIL import Image
+        
+        print(f"Scanning image for decoding: {image_path}")
+        
+        # Load image
+        img = Image.open(image_path)
+        print(f"Image loaded: {img.size}, mode: {img.mode}")
+        
+        # Convert to RGB for decoding
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        # Decode all barcodes
+        decoder = PDF417Decoder(img)
+        results = decoder.decode_all()
+        
+        # Save results to file
+        if results:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                for i, result in enumerate(results):
+                    f.write(f"Barcode {i+1}:\n")
+                    f.write(f"Data: {result}\n")
+                    f.write("-" * 40 + "\n")
+            
+            print(f"SUCCESS: Decoded data saved to: {output_file}")
+            print(f"Found {len(results)} barcode(s)")
+            return True
+        else:
+            print("No PDF417 barcodes found in the image")
+            return False
+        
+    except ImportError as e:
+        print(f"ERROR: Missing required library: {e}")
+        print("Install with: pip install pyzbar pillow")
+        return False
+    except Exception as e:
+        print(f"ERROR: Failed to scan barcodes: {e}")
+        return False
+
 def scan_with_detailed_info(image_path):
     """
     Scan and decode PDF417 barcodes with detailed information.
@@ -166,33 +218,49 @@ def main():
             print(f"ERROR: File not found: {image_path}")
             return
         
-        # Scan for single barcode
-        result = scan_pdf417_barcode(image_path)
+        # Check if user wants to save to file
+        save_to_file = len(sys.argv) > 2 and sys.argv[2] == "--save"
+        output_file = "decoded_data.txt"
+        if len(sys.argv) > 3:
+            output_file = sys.argv[3]
         
-        if result:
-            print(f"\nDecoded data: {result}")
+        if save_to_file:
+            # Decode to file
+            success = decode_to_file(image_path, output_file)
+            if success:
+                print(f"\nDecoded data saved to: {output_file}")
         else:
-            print("\nNo barcodes detected. Try:")
-            print("1. Ensuring good lighting conditions")
-            print("2. Making sure the entire barcode is visible")
-            print("3. Using a high-contrast black/white barcode")
-            print("4. Checking that the image is not blurry")
-        
-        # Also try scanning for multiple barcodes
-        print("\n" + "-" * 30)
-        print("Scanning for multiple barcodes...")
-        all_results = scan_multiple_barcodes(image_path)
-        
-        # Show detailed information
-        print("\n" + "-" * 30)
-        print("Detailed barcode information...")
-        detailed_info = scan_with_detailed_info(image_path)
+            # Scan for single barcode
+            result = scan_pdf417_barcode(image_path)
+            
+            if result:
+                print(f"\nDecoded data: {result}")
+            else:
+                print("\nNo barcodes detected. Try:")
+                print("1. Ensuring good lighting conditions")
+                print("2. Making sure the entire barcode is visible")
+                print("3. Using a high-contrast black/white barcode")
+                print("4. Checking that the image is not blurry")
+            
+            # Also try scanning for multiple barcodes
+            print("\n" + "-" * 30)
+            print("Scanning for multiple barcodes...")
+            all_results = scan_multiple_barcodes(image_path)
+            
+            # Show detailed information
+            print("\n" + "-" * 30)
+            print("Detailed barcode information...")
+            detailed_info = scan_with_detailed_info(image_path)
         
     else:
-        print("Usage: python pdf417_scanner.py <image_path>")
-        print("\nExample:")
+        print("Usage: python pdf417_scanner.py <image_path> [options]")
+        print("\nOptions:")
+        print("  --save [output_file]  Save decoded data to file")
+        print("\nExamples:")
         print("  python pdf417_scanner.py generated_barcode.png")
         print("  python pdf417_scanner.py test_complete_pdf417.png")
+        print("  python pdf417_scanner.py barcode.png --save")
+        print("  python pdf417_scanner.py barcode.png --save results.txt")
 
 if __name__ == "__main__":
     main()
