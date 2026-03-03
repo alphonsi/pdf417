@@ -8,11 +8,12 @@ It uses the zxing-cpp library for barcode detection and decoding.
 
 import sys
 import os
+from typing import List, Dict, Optional, Union
 
 # Add the current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-def scan_pdf417_barcode(image_path):
+def scan_pdf417_barcode(image_path: str) -> str:
     """
     Scan and decode a PDF417 barcode from an image file.
     
@@ -56,7 +57,7 @@ def scan_pdf417_barcode(image_path):
         print(f"ERROR: Failed to scan barcode: {e}")
         return ""
 
-def scan_multiple_barcodes(image_path):
+def scan_multiple_barcodes(image_path: str) -> List[str]:
     """
     Scan and decode all PDF417 barcodes from an image file.
     
@@ -64,7 +65,7 @@ def scan_multiple_barcodes(image_path):
         image_path (str): Path to the image file containing the barcode(s)
     
     Returns:
-        list: List of decoded data strings from all PDF417 barcodes found
+        List[str]: List of decoded data strings from all PDF417 barcodes found
     """
     try:
         import zxingcpp as zxing
@@ -102,7 +103,7 @@ def scan_multiple_barcodes(image_path):
         print(f"ERROR: Failed to scan barcodes: {e}")
         return []
 
-def decode_to_file(image_path, output_file="decoded_data.txt"):
+def decode_to_file(image_path: str, output_file: str = "decoded_data.txt") -> bool:
     """
     Scan and decode PDF417 barcodes and save results to a file.
     
@@ -153,7 +154,7 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
         print(f"ERROR: Failed to scan barcodes: {e}")
         return False
 
-def scan_with_detailed_info(image_path):
+def scan_with_detailed_info(image_path: str) -> List[Dict[str, Union[str, object]]]:
     """
     Scan and decode PDF417 barcodes with detailed information.
     
@@ -161,7 +162,7 @@ def scan_with_detailed_info(image_path):
         image_path (str): Path to the image file containing the barcode(s)
     
     Returns:
-        list: List of dictionaries containing detailed barcode information
+        List[Dict[str, Union[str, object]]]: List of dictionaries containing detailed barcode information
     """
     try:
         import zxingcpp as zxing
@@ -181,10 +182,10 @@ def scan_with_detailed_info(image_path):
         results = zxing.read_barcodes(img)
         
         # Get detailed barcode information
-        detailed_info = []
+        detailed_info: List[Dict[str, Union[str, object]]] = []
         if results:
             for i, result in enumerate(results):
-                info = {
+                info: Dict[str, Union[str, object]] = {
                     'text': result.text,
                     'format': str(result.format),
                     'position': result.position
