@@ -45,20 +45,36 @@ Note: You may also need to install ZBar for pyzbar to work properly on some syst
 
 ### 1. Encoding (Generate PDF417 Barcodes)
 
+**From Text Data:**
 ```bash
 python pdf_417/pdf417_encoder.py
 ```
 
 This will generate a PDF417 barcode from sample data and save it as `generated_barcode.png`.
 
+**From Text File:**
+```bash
+python pdf_417/pdf417_encoder.py input_data.txt
+```
+
+This reads data from `input_data.txt` and generates `encoded_barcode.png`.
+
 **Custom Encoding:**
 ```python
-from pdf_417.pdf417_encoder import generate_pdf417_barcode
+from pdf_417.pdf417_encoder import generate_pdf417_barcode, encode_from_file
 
-# Generate custom barcode
+# Generate custom barcode from text
 output_file = generate_pdf417_barcode(
     data="Your custom data here",
     output_file="my_barcode.png",
+    columns=12,
+    security_level=4
+)
+
+# Generate barcode from file
+output_file = encode_from_file(
+    input_file="input_data.txt",
+    output_file="encoded_barcode.png",
     columns=12,
     security_level=4
 )
@@ -66,19 +82,33 @@ output_file = generate_pdf417_barcode(
 
 ### 2. Scanning (Decode PDF417 Barcodes)
 
+**Basic Scanning:**
 ```bash
 python pdf_417/pdf417_scanner.py generated_barcode.png
 ```
 
 This will scan the specified image file and decode any PDF417 barcodes found.
 
+**Save Decoded Data to File:**
+```bash
+python pdf_417/pdf417_scanner.py barcode_image.png --save
+python pdf_417/pdf417_scanner.py barcode_image.png --save results.txt
+```
+
+This saves decoded data to `decoded_data.txt` or a specified output file.
+
 **Programmatic Scanning:**
 ```python
-from pdf_417.pdf417_scanner import scan_pdf417_barcode
+from pdf_417.pdf417_scanner import scan_pdf417_barcode, decode_to_file
 
 # Scan an image
 result = scan_pdf417_barcode("my_barcode.png")
 print(f"Decoded data: {result}")
+
+# Save decoded data to file
+success = decode_to_file("barcode_image.png", "results.txt")
+if success:
+    print("Decoded data saved to results.txt")
 ```
 
 ### 3. Testing (Complete Workflow)
