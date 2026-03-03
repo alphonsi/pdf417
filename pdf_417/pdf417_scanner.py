@@ -3,7 +3,7 @@
 PDF417 Barcode Scanner
 
 This script provides functionality to scan and decode PDF417 barcodes from images.
-It uses the pdf417decoder library for barcode detection and decoding.
+It uses the zxing-cpp library for barcode detection and decoding.
 """
 
 import sys
@@ -23,7 +23,7 @@ def scan_pdf417_barcode(image_path):
         str: Decoded data from the first PDF417 barcode found, or empty string if none found
     """
     try:
-        from pdf417decoder import PDF417Decoder
+        import zxingcpp as zxing
         from PIL import Image
         
         print(f"Scanning image: {image_path}")
@@ -37,21 +37,20 @@ def scan_pdf417_barcode(image_path):
             img = img.convert('RGB')
         
         # Decode
-        decoder = PDF417Decoder(img)
-        decode_result = decoder.decode()
+        results = zxing.read_barcodes(img)
         
-        if decode_result > 0:
-            # Get the decoded data from the first barcode
-            result = decoder.barcode_data
-            print(f"SUCCESS: Decoded data: {repr(result)}")
-            return result
+        if results:
+            # Get the first PDF417 barcode result
+            result = results[0]
+            print(f"SUCCESS: Decoded data: {repr(result.text)}")
+            return result.text
         else:
             print("No PDF417 barcodes found in the image")
             return ""
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pdf417decoder pillow")
+        print("Install with: pip install zxing-cpp pillow")
         return ""
     except Exception as e:
         print(f"ERROR: Failed to scan barcode: {e}")
@@ -68,7 +67,7 @@ def scan_multiple_barcodes(image_path):
         list: List of decoded data strings from all PDF417 barcodes found
     """
     try:
-        from pdf417decoder import PDF417Decoder
+        import zxingcpp as zxing
         from PIL import Image
         
         print(f"Scanning image for multiple barcodes: {image_path}")
@@ -82,24 +81,22 @@ def scan_multiple_barcodes(image_path):
             img = img.convert('RGB')
         
         # Decode all barcodes
-        decoder = PDF417Decoder(img)
-        decode_result = decoder.decode()
+        results = zxing.read_barcodes(img)
         
-        results = []
-        if decode_result > 0:
-            # Get data from the first barcode
-            result = decoder.barcode_data
-            results.append(result)
-            print(f"SUCCESS: Found {len(results)} barcode(s):")
-            print(f"  Barcode 1: {repr(result)}")
+        decoded_results = []
+        if results:
+            for i, result in enumerate(results):
+                decoded_results.append(result.text)
+                print(f"  Barcode {i+1}: {repr(result.text)}")
+            print(f"SUCCESS: Found {len(decoded_results)} barcode(s):")
         else:
             print("No PDF417 barcodes found in the image")
         
-        return results
+        return decoded_results
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pdf417decoder pillow")
+        print("Install with: pip install zxing-cpp pillow")
         return []
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
@@ -117,7 +114,7 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
         bool: True if successful, False otherwise
     """
     try:
-        from pdf417decoder import PDF417Decoder
+        import zxingcpp as zxing
         from PIL import Image
         
         print(f"Scanning image for decoding: {image_path}")
@@ -131,21 +128,14 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
             img = img.convert('RGB')
         
         # Decode all barcodes
-        decoder = PDF417Decoder(img)
-        decode_result = decoder.decode()
-        
-        results = []
-        if decode_result > 0:
-            # Get data from the first barcode
-            result = decoder.barcode_data
-            results.append(result)
+        results = zxing.read_barcodes(img)
         
         # Save results to file
         if results:
             with open(output_file, 'w', encoding='utf-8') as f:
                 for i, result in enumerate(results):
                     f.write(f"Barcode {i+1}:\n")
-                    f.write(f"Data: {result}\n")
+                    f.write(f"Data: {result.text}\n")
                     f.write("-" * 40 + "\n")
             
             print(f"SUCCESS: Decoded data saved to: {output_file}")
@@ -157,7 +147,7 @@ def decode_to_file(image_path, output_file="decoded_data.txt"):
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pdf417decoder pillow")
+        print("Install with: pip install zxing-cpp pillow")
         return False
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
@@ -174,7 +164,7 @@ def scan_with_detailed_info(image_path):
         list: List of dictionaries containing detailed barcode information
     """
     try:
-        from pdf417decoder import PDF417Decoder
+        import zxingcpp as zxing
         from PIL import Image
         
         print(f"Scanning image for detailed barcode information: {image_path}")
@@ -188,22 +178,24 @@ def scan_with_detailed_info(image_path):
             img = img.convert('RGB')
         
         # Decode all barcodes
-        decoder = PDF417Decoder(img)
-        decode_result = decoder.decode()
+        results = zxing.read_barcodes(img)
         
         # Get detailed barcode information
         detailed_info = []
-        if hasattr(decoder, '_barcodes_info'):
-            detailed_info = decoder._barcodes_info
+        if results:
+            for i, result in enumerate(results):
+                info = {
+                    'text': result.text,
+                    'format': str(result.format),
+                    'position': result.position
+                }
+                detailed_info.append(info)
+                print(f"  Barcode {i+1}: {repr(result.text)}")
+                print(f"    Format: {result.format}")
+                print(f"    Position: {result.position}")
         
-        if decode_result > 0:
-            result = decoder.barcode_data
-            print(f"SUCCESS: Found {1} barcode(s):")
-            print(f"  Barcode 1: {repr(result)}")
-            if detailed_info:
-                info = detailed_info[0]
-                print(f"    Position: {info['rect']}")
-                print(f"    Polygon: {info['polygon']}")
+        if results:
+            print(f"SUCCESS: Found {len(results)} barcode(s):")
         else:
             print("No PDF417 barcodes found in the image")
         
@@ -211,7 +203,7 @@ def scan_with_detailed_info(image_path):
         
     except ImportError as e:
         print(f"ERROR: Missing required library: {e}")
-        print("Install with: pip install pdf417decoder pillow")
+        print("Install with: pip install zxing-cpp pillow")
         return []
     except Exception as e:
         print(f"ERROR: Failed to scan barcodes: {e}")
