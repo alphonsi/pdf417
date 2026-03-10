@@ -1,0 +1,89 @@
+File:	  Fnt+Bk.jpg	
+Pages:	  1	Barcodes:	  1
+Barcode:	1 of 1	
+Type:	Pdf417		Page 1 of 1
+Length:	346	
+Rotation:	none	
+Module:	4.7pix	
+Rectangle:	{X=15,Y=24,Width=1374,Height=324}	
+Formatted: drvLic
+
+<AAMVA>
+
+  <user>
+    <last e="DCS">Haag</last>
+    <first e="DAC">Brian</first>
+    <middle e="DAD">Elmer</middle>
+    <dob e="DBB">1970-03-17</dob>
+    <eyes e="DAY">BLU</eyes>
+    <hair e="DAZ">BRN</hair>
+    <sex e="DBC">M</sex>
+    <height e="DAU">5'9"</height>
+    <weight e="DAW">205lb</weight>
+    <street e="DAG">4818 Bruges Ave</street>
+    <city e="DAI">Woodland Hill</city>
+    <state e="DAJ">CA</state>
+    <postal e="DAK">91364</postal>
+    <country e="DCG">USA</country>
+    <id e="DAQ">A1181102</id>
+    <issued e="DBD">2016-05-27</issued>
+    <expires e="DBA">2022-03-17</expires>
+  </user>
+
+  <head>
+    <filetype name="File Type">ANSI</filetype>
+    <format name="Data Format">11</format>
+    <issuer name="Issuer Identification Number">636014</issuer>
+    <state name="Issuer Name">California</state>
+    <st name="Issuer Name Abbreviated">CA</st>
+    <version name="AAMVA Version Number">04</version>
+    <jurver name="Jurisdiction Version Number">00</jurver>
+    <entries name="Number of Entries">02</entries>
+  </head>
+
+  <subfile designator="DL" offset="41" length="272">
+    <element id="DCA" name="Jurisdiction-specific vehicle class">C</element>
+    <element id="DCB" name="Jurisdiction-specific restriction codes">NONE</element>
+    <element id="DCD" name="Jurisdiction-specific endorsement codes">NONE</element>
+    <element id="DBA" name="Document Expiration Date">03172022</element>
+    <element id="DCS" name="Customer Family Name">HAAG</element>
+    <element id="DAC" name="Driver First Name">BRIAN</element>
+    <element id="DAD" name="Driver Middle Name or Initial">ELMER</element>
+    <element id="DBD" name="Document Issue Date">05272016</element>
+    <element id="DBB" name="Date of Birth">03171970</element>
+    <element id="DBC" name="Physical Description - Sex">1</element>
+    <element id="DAY" name="Physical Description - Eye Color">BLU</element>
+    <element id="DAU" name="Physical Description - Height">069 IN</element>
+    <element id="DAG" name="Address - Street 1">4818 BRUGES AVE</element>
+    <element id="DAI" name="Address - City">WOODLAND HILL</element>
+    <element id="DAJ" name="Address - Jurisdiction Code">CA</element>
+    <element id="DAK" name="Address - Postal Code">91364</element>
+    <element id="DAQ" name="Customer ID Number">A1181102</element>
+    <element id="DCF" name="Document Discriminator">05/17/2016672B9/CCFD/22</element>
+    <element id="DCG" name="Country Identification">USA</element>
+    <element id="DDE" name="Family name truncation"></element>
+    <element id="DDF" name="First name truncation"></element>
+    <element id="DDG" name="Middle name truncation"></element>
+    <element id="DAW" name="Physical Description - Weight">205LB</element>
+    <element id="DAZ" name="Hair color">BRN</element>
+    <element id="DCK" name="Inventory control number">15147A11811020901</element>
+    <element id="DDB" name="Card Revision Date">04162010</element>
+    <element id="DDD" name="Limited Duration Document Indicator"></element>
+  </subfile>
+
+  <subfile designator="ZC" offset="313" length="33">
+    <element id="A" name="Optional field A">
+    </element>
+    <element id="B" name="Optional field B">
+    </element>
+    <element id="C" name="Optional field C">
+    </element>
+    <element id="D" name="Optional field D">
+    </element>
+    <element id="E" name="Optional field E">
+    </element>
+    <element id="F" name="Optional field F">
+    </element>
+  </subfile>
+
+</AAMVA>

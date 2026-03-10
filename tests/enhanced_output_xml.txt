@@ -1,0 +1,71 @@
+File:	  enhanced_barcode.png	
+Pages:	  1	Barcodes:	  1
+Barcode:	1 of 1	
+Type:	Pdf417		Page 1 of 1
+Length:	346	
+Rotation:	none	
+Module:	4.7pix	
+Rectangle:	{X=15,Y=24,Width=1374,Height=324}	
+Formatted: drvLic
+
+<AAMVA>
+
+  <user>
+    <lastname e="DCS">HAAG</lastname>
+    <firstname e="DAC">BRIAN</firstname>
+    <middlename e="DAD">ELMER</middlename>
+    <dateofbirth e="DBB">1970-03-17</dateofbirth>
+    <eyecolor e="DAY">BLU</eyecolor>
+    <haircolor e="DAZ">BRN</haircolor>
+    <sex e="DBC">1</sex>
+    <height e="DAU">069 IN</height>
+    <weight e="DAW">205LB</weight>
+    <addressstreet e="DAG">4818 BRUGES AVE</addressstreet>
+    <addresscity e="DAI">WOODLAND HILL</addresscity>
+    <addressstate e="DAJ">CA</addressstate>
+    <addresspostalcode e="DAK">91364</addresspostalcode>
+    <country e="DCG">USA</country>
+    <licensenumber e="DAQ">A1181102</licensenumber>
+    <issuedate e="DBD">2016-05-27</issuedate>
+    <expirationdate e="DBA">2022-03-17</expirationdate>
+  </user>
+  <head>
+    <filetype name="File Type">ANSI</filetype>
+    <format name="Data Format">11</format>
+    <issuer name="Issuer Identification Number">636014</issuer>
+    <state name="Issuer Name">CA</state>
+    <st name="Issuer Name Abbreviated">CA</st>
+    <version name="AAMVA Version Number">04</version>
+    <jurver name="Jurisdiction Version Number">00</jurver>
+    <entries name="Number of Entries">02</entries>
+  </head>
+  <subfile designator="DL" offset="0" length="27">
+    <element id="DCA" name="Unknown">C</element>
+    <element id="DCB" name="Unknown">NONE</element>
+    <element id="DCD" name="Unknown">NONE</element>
+    <element id="DBA" name="Unknown">03172022</element>
+    <element id="DCS" name="Unknown">HAAG</element>
+    <element id="DAC" name="Unknown">BRIAN</element>
+    <element id="DAD" name="Unknown">ELMER</element>
+    <element id="DBD" name="Unknown">05272016</element>
+    <element id="DBB" name="Unknown">03171970</element>
+    <element id="DBC" name="Unknown">1</element>
+    <element id="DAY" name="Unknown">BLU</element>
+    <element id="DAU" name="Unknown">069 IN</element>
+    <element id="DAG" name="Unknown">4818 BRUGES AVE</element>
+    <element id="DAI" name="Unknown">WOODLAND HILL</element>
+    <element id="DAJ" name="Unknown">CA</element>
+    <element id="DAK" name="Unknown">91364</element>
+    <element id="DAQ" name="Unknown">A1181102</element>
+    <element id="DCF" name="Unknown">05/17/2016672B9/CCFD/22</element>
+    <element id="DCG" name="Unknown">USA</element>
+    <element id="DDE" name="Unknown"></element>
+    <element id="DDF" name="Unknown"></element>
+    <element id="DDG" name="Unknown"></element>
+    <element id="DAW" name="Unknown">205LB</element>
+    <element id="DAZ" name="Unknown">BRN</element>
+    <element id="DCK" name="Unknown">15147A11811020901</element>
+    <element id="DDB" name="Unknown">04162010</element>
+    <element id="DDD" name="Unknown"></element>
+  </subfile>
+</AAMVA>

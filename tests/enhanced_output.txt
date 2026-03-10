@@ -1,0 +1,41 @@
+PDF417 Scan Results
+Generated: 2026-03-10 09:46:15 EAT
+Source: c:\Users\ProXsy\Projects\pdf417\tests\enhanced_barcode.png
+Barcodes: 1
+
+Barcode #1 Raw:
+ANSI 636014040002<RS>DCAC<RS>DCBNONE<RS>DCDNONE<RS>DBA03172022<RS>DCSHAAG<RS>DACBRIAN<RS>DADELMER<RS>DBD05272016<RS>DBB03171970<RS>DBC1<RS>DAYBLU<RS>DAU069 IN<RS>DAG4818 BRUGES AVE<RS>DAIWOODLAND HILL<RS>DAJCA<RS>DAK91364<RS>DAQA1181102<RS>DCF05/17/2016672B9/CCFD/22<RS>DCGUSA<RS>DDE<LF>    <RS>DDF<LF>    <RS>DDG<LF>    <RS>DAW205LB<RS>DAZBRN<RS>DCK15147A11811020901<RS>DDB04162010<RS>DDD<LF>    <RS>A<LF>    <RS>B<LF>    <RS>C<LF>    <RS>D<LF>    <RS>E<LF>    <RS>F<LF>    <RS>
+
+Barcode #1 Parsed AAMVA:
+issuer_iin=636014
+aamva_version=04
+jurisdiction_version=00
+subfile_entries=02
+vehicle_class=C
+restrictions=NONE
+endorsements=NONE
+expires_mmddyyyy=03172022
+last_name=HAAG
+first_name=BRIAN
+middle_name=ELMER
+issue_mmddyyyy=05272016
+dob_mmddyyyy=03171970
+sex=1
+eyes=BLU
+height_inches=069
+street=4818 BRUGES AVE
+city=WOODLAND HILL
+state=CA
+postal=91364
+id_number=A1181102
+discriminator=05/17/2016672B9/CCFD/22
+country=USA
+last_name_truncation=
+first_name_truncation=
+middle_name_truncation=
+weight_lb=205
+hair=BRN
+inventory_control=15147A11811020901
+card_revision_date=04162010
+limited_duration_indicator=
+

@@ -1,0 +1,27 @@
+# Penina PDF417 Scanner & Encoder Dependencies
+
+# Core dependencies
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# PDF417 scanning
+zxing-cpp>=2.1.0
+
+# PDF417 encoding
+pylibdmtx>=0.1.10
+treepoem>=4.0.0
+
+# Image processing
+opencv-python>=4.8.0
+
+# XML processing (built-in, but listed for clarity)
+# xml.etree.ElementTree
+
+# Optional: AAMVA parsing (if needed)
+# aamva>=0.1.0
+
+# GUI dependencies (built-in)
+# tkinter
+
+# Build tools
+PyInstaller>=5.13.0
