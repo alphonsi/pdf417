@@ -29,7 +29,14 @@ import treepoem
 from pylibdmtx import pylibdmtx
 
 # Import our XML-to-ANSI converter
-from ..converter.xml_converter import xml_to_aamva_ansi, validate_aamva_compliance
+try:
+    from ..converter.xml_converter import xml_to_aamva_ansi, validate_aamva_compliance
+except ImportError:
+    # Fallback for when running as standalone module
+    import sys
+    import os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+    from converter.xml_converter import xml_to_aamva_ansi, validate_aamva_compliance
 
 
 def parse_xml_to_aamva(xml_content: str) -> Dict[str, Any]:

@@ -25,10 +25,16 @@ try:
     from .converter.xml_converter import validate_aamva_compliance
     from .core.utils import log_message, validate_dependencies, get_app_name, get_app_version, get_author_info, check_dependencies
 except ImportError:
-    # Fallback for when running as script
+    # Fallback for when running as script or executable
     import sys
     import os
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
+    # Add the penina package directory to the path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.insert(0, parent_dir)
+    
+    # Now import without the dot prefix
     from gui.main import PDF417App
     from scanner.pdf417_scanner import decode_pdf417_xml, save_xml_results
     from encoder.pdf417_encoder import build_aamva_string_from_xml, encode_pdf417_barcode_enhanced

@@ -3,12 +3,14 @@
 block_cipher = None
 
 a = Analysis(
-    ['penina/main.py'],
+    ['penina_launcher.py'],
     pathex=[],
     binaries=[],
     datas=[
         # Include test files for proven functionality
         ('tests/', 'tests/'),
+        # Include pylibdmtx DLL files
+        ('C:\\Users\\ProXsy\\AppData\\Roaming\\Python\\Python314\\site-packages\\pylibdmtx\\libdmtx-64.dll', 'pylibdmtx'),
     ],
     hiddenimports=[
         # Core dependencies
