@@ -18,11 +18,22 @@ from datetime import datetime
 # Add current directory to path to ensure imports work
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from .gui.main import PDF417App
-from .scanner.pdf417_scanner import decode_pdf417_xml, save_xml_results
-from .encoder.pdf417_encoder import build_aamva_string_from_xml, encode_pdf417_barcode_enhanced
-from .converter.xml_converter import validate_aamva_compliance
-from .core.utils import log_message, validate_dependencies, get_app_name, get_app_version, get_author_info, check_dependencies
+try:
+    from .gui.main import PDF417App
+    from .scanner.pdf417_scanner import decode_pdf417_xml, save_xml_results
+    from .encoder.pdf417_encoder import build_aamva_string_from_xml, encode_pdf417_barcode_enhanced
+    from .converter.xml_converter import validate_aamva_compliance
+    from .core.utils import log_message, validate_dependencies, get_app_name, get_app_version, get_author_info, check_dependencies
+except ImportError:
+    # Fallback for when running as script
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from gui.main import PDF417App
+    from scanner.pdf417_scanner import decode_pdf417_xml, save_xml_results
+    from encoder.pdf417_encoder import build_aamva_string_from_xml, encode_pdf417_barcode_enhanced
+    from converter.xml_converter import validate_aamva_compliance
+    from core.utils import log_message, validate_dependencies, get_app_name, get_app_version, get_author_info, check_dependencies
 
 
 def run_gui():
@@ -57,7 +68,10 @@ def run_scanner(args):
         
         if results:
             # Generate XML output
-            from .scanner.pdf417_scanner import create_xml_output
+            try:
+                from .scanner.pdf417_scanner import create_xml_output
+            except ImportError:
+                from scanner.pdf417_scanner import create_xml_output
             xml_content = create_xml_output(args.image, results)
             
             # Save results
