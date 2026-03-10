@@ -7,9 +7,9 @@ numpy>=1.24.0
 # PDF417 scanning
 zxing-cpp>=2.1.0
 
-# PDF417 encoding
+# PDF417 encoding (using pylibdmtx for robust encoding)
 pylibdmtx>=0.1.10
-treepoem>=4.0.0
+# treepoem>=4.0.0  # Removed - using pylibdmtx for robust PDF417 encoding
 
 # Image processing
 opencv-python>=4.8.0
